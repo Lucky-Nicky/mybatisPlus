@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    username: root
+    password: 19941229Ddl
+    url: jdbc:mysql://124.223.59.152:3306/mybatis?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+#输出SQL日志
+logging:
+  level:
+    root: error
+    com.dali.mybatisplus: error
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleteFlag #全局逻辑删除的实体字段名
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
