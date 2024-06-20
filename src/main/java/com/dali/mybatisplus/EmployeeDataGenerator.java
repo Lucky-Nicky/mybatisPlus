@@ -44,5 +44,6 @@ public class EmployeeDataGenerator {
 
         return new Employee(last8Digits, email, gender, age);
     }
+
 }
 

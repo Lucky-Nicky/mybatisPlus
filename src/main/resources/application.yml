@@ -1,15 +1,18 @@
 spring:
   datasource:
-    username: root
-    password: 19941229Ddl
-    url: jdbc:mysql://124.223.59.152:3306/mybatis?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+#    username: root
+#    password: 19941229Ddl
+#    url: jdbc:mysql://124.223.59.152:3306/mybatis?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    username: mpw:RbE/C6UjKrV4UdI+ydkipg==
+    password: mpw:kzn2src9k/rRhFOcq3/iYw==
+    url: mpw:PrnEU1taurY6YR9SJbxNS2jEBfFyi6tVCLIdoH5cCW5hI5tcu/21I/wydl+aONRkzVIV2wOn0zLRHIc9rf64NkKFuHHIr5/mkMQ3TVLTUXtPkUTvbn9IRKduviItJbYbZ/Mw5E77msHG4y8TQQ85yw==
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 #输出SQL日志
 logging:
   level:
-    root: error
-    com.dali.mybatisplus: error
+    root: info
+    com.dali.mybatisplus: info
 
 mybatis-plus:
   configuration:
@@ -20,3 +23,5 @@ mybatis-plus:
       logic-delete-field: deleteFlag #全局逻辑删除的实体字段名
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+
+

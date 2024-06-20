@@ -1,9 +1,6 @@
 package com.dali.mybatisplus.model;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,6 +33,10 @@ public class Employee {
     @TableLogic(value = "0", delval = "1")
     @TableField(fill = FieldFill.INSERT)
     private Integer deleteFlag;
+
+    @Version   //这就是控制版本的
+    @TableField(fill = FieldFill.INSERT)    //这个方便在添加的时候设置版本初始为1
+    private  Integer version;    //版本的字段
 
 
 

@@ -1,5 +1,6 @@
 package com.dali.mybatisplus;
 
+import com.baomidou.mybatisplus.core.toolkit.AES;
 import com.dali.mybatisplus.mapper.EmployeeMapper;
 import com.dali.mybatisplus.model.Employee;
 import org.junit.jupiter.api.Nested;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import static com.dali.mybatisplus.EmployeeDataGenerator.*;
 
 @Nested
-@SpringBootTest
+@SpringBootTest(args = "--mpw.key=cd562e25eec0e0a2")
 class MybatisplusApplicationTests {
 
     @Autowired
@@ -190,5 +191,101 @@ class MybatisplusApplicationTests {
          *
          * */
         List<Employee> employees = employeeMapper.selectList(null);
+    }
+    //丢失更新问题
+    @Test
+    void testCAS2(){
+
+        // 线程1  age:50  version:1
+        Employee employee1 = employeeMapper.selectById(35);
+
+        // 线程2 age:50  version:1
+        Employee employee2 = employeeMapper.selectById(35);
+
+        employee1.setAge(100);
+
+        employee2.setAge(80);
+
+        if(employeeMapper.updateById(employee1) > 0){
+            System.out.println("更新成功");
+        }
+        if(employeeMapper.updateById(employee2) == 0){
+            System.out.println("更新失败，请重新刷新页面并更新");
+        }
+    }
+    //引入乐观锁解决了并发更新问题
+    @Test
+    void testCAS(){
+
+        // 线程1  age:50  version:1
+        Employee employee1 = employeeMapper.selectById(36);
+
+        // 线程2 age:50  version:1
+        Employee employee2 = employeeMapper.selectById(36);
+
+        employee1.setAge(100);
+
+        employee2.setAge(80);
+
+        /**
+         * update age 100  version:2  where  version1 =数据库version1
+         *
+         * UPDATE
+         *     tbl_employee
+         * SET
+         *     last_name='C',
+         *     email='123@qq.com',
+         *     gender=1,
+         *     age=100,
+         *     modify_date='2022-11-15 07:09:31.162',
+         *     version=2
+         * WHERE
+         *     id=2
+         *     AND version=1
+         *     AND delete_flag=0
+         */
+        if(employeeMapper.updateById(employee1) > 0){
+            System.out.println("更新成功");
+        }
+
+        /**
+         * update 80  version:2 where version1 =数据库version2
+         *UPDATE
+         *     tbl_employee
+         * SET
+         *     last_name='C',
+         *     email='123@qq.com',
+         *     gender=1,
+         *     age=80,
+         *     modify_date='2022-11-15 07:09:31.18',
+         *     version=2
+         * WHERE
+         *     id=2
+         *     AND version=1
+         *     AND delete_flag=0
+         * */
+        if(employeeMapper.updateById(employee2) == 0){
+            System.out.println("更新失败，请重新刷新页面并更新");
+        }
+    }
+    @Test
+    void testRandomKey(){// 生成 16 位随机 AES 密钥
+        String randomKey = AES.generateRandomKey();
+        System.out.println("这是新生成的秘钥++++++++++++++++++"+randomKey);
+        //fed64f56abe56bd6
+    }
+
+    @Test
+    void testEncrypt(){
+        String url = AES.encrypt("jdbc:mysql://124.223.59.152:3306/mybatis?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC" , "cd562e25eec0e0a2");
+        String uname = AES.encrypt("root" , "cd562e25eec0e0a2");
+        String pwd = AES.encrypt("19941229Ddl" , "cd562e25eec0e0a2");
+
+        System.out.println("这是新生成的加密url++++++++++++++++++"+url);
+        // x22Gia7StPlQXDHL4weOZe92WQ9Kj20/Da/M3rNYBVdYcdhOl+yOGs/JrFcwAW9FTFxiSMa1fe6Mwd2jH+MPP30u8mJw9nFOiNpNsNlX0t0WE8ohrkZOWVN4WfUWAnTZgzNS4VHbr3YtuPGbtc4NGw==
+        System.out.println("这是新生成的加密uname++++++++++++++++++"+uname);
+        // uWw+rfWZ9jOnv02UGqwung==
+        System.out.println("这是新生成的加密pwd++++++++++++++++++"+pwd);
+        // rYg5K6hkfGo8hoGT5n+DKg==
     }
 }
